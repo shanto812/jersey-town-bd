@@ -8,7 +8,7 @@ A modern, responsive, and fully functional e-commerce web application built with
 
 ## 🚀 Live Demo
 
-👉 [https://e-commerce-alpha-amber-20.vercel.app/](https://e-commerce-alpha-amber-20.vercel.app/)
+👉 [https://e-commerce-alpha-amber-20.vercel.app/](https://jersey-town.vercel.app/)
 
 
 
