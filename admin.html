@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProSport - Admin Panel</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+        
+</head>
+<body>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="login-logo">
+                <h1><i class="bi bi-lightning-fill"></i> ProSport</h1>
+                <p>Admin Panel Login</p>
+            </div>
+            <div class="error-message" id="errorMessage">
+                Invalid credentials. Please try again.
+            </div>
+            <form onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-person"></i>
+                    </span>
+                    <input type="text" id="loginUsername" class="form-control" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-lock"></i>
+                    </span>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Password" required>
+                    <button type="button" class="input-group-text" onclick="togglePassword()">
+                        <i class="bi bi-eye" id="passwordToggle"></i>
+                    </button>
+                </div>
+                <button type="submit" class="btn-login">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </button>
+            </form>
+            <div class="text-center mt-3 text-secondary">
+                <small>Default: admin / admin123</small>
+            </div>
+            <div class="text-center mt-3">
+                <a href="index.html" class="btn btn-outline-gradient" style="text-decoration: none; display: inline-block; padding: 0.6rem 1.5rem; border: 2px solid var(--primary-color); color: var(--primary-color); border-radius: 10px; font-weight: 600; transition: all 0.3s ease;">
+                    <i class="bi bi-house-door"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboardPage" class="dashboard-container" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">
+                    <i class="bi bi-lightning-fill"></i> ProSport
+                </div>
+                <p class="text-secondary mb-0" style="font-size: 0.8rem;">Admin Panel</p>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" onclick="showSection('dashboard')">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a></li>
+                <li><a href="#" onclick="showSection('products')">
+                    <i class="bi bi-box-seam"></i> Products
+                </a></li>
+                <li><a href="#" onclick="showSection('orders')">
+                    <i class="bi bi-bag-check"></i> Orders
+                </a></li>
+                <li><a href="#" onclick="showSection('settings')">
+                    <i class="bi bi-gear"></i> Settings
+                </a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navbar -->
+            <nav class="top-navbar">
+                <div>
+                    <button class="mobile-toggle" onclick="toggleSidebar()">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <span class="navbar-title">Dashboard</span>
+                </div>
+                <div class="navbar-user">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <span id="userName">Admin</span>
+                    <button class="btn-logout" onclick="handleLogout()">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Content Wrapper -->
+            <div class="content-wrapper">
+                <!-- Dashboard Section -->
+                <div id="dashboard" class="section active">
+                    <h2 class="mb-4">Dashboard Overview</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="bi bi-box-seam"></i>
+                            </div>
+                            <div class="stat-value" id="totalProducts">0</div>
+                            <div class="stat-label">Total Products</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="bi bi-bag-check"></i>
+                            </div>
+                            <div class="stat-value" id="totalOrders">0</div>
+                            <div class="stat-label">Total Orders</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+                            <div class="stat-value" id="pendingOrders">0</div>
+                            <div class="stat-label">Pending Orders</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="bi bi-currency-dollar"></i>
+                            </div>
+                            <div class="stat-value" id="totalRevenue">$0</div>
+                            <div class="stat-label">Total Revenue</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            Recent Orders
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Customer</th>
+                                            <th>Items</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentOrdersTable">
+                                        <tr>
+                                            <td colspan="6" class="text-center text-secondary">No orders yet</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Section -->
+                <div id="products" class="section">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Products Management</h2>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                            <i class="bi bi-plus-circle"></i> Add New Product
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Name</th>
+                                            <th>Category</th>
+                                            <th>Team</th>
+                                            <th>Price</th>
+                                            <th>Stock</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="productsTable">
+                                        <!-- Products will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Section -->
+                <div id="orders" class="section">
+                    <h2 class="mb-4">Orders Management</h2>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Customer</th>
+                                            <th>Phone</th>
+                                            <th>WhatsApp</th>
+                                            <th>Address</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ordersTable">
+                                        <!-- Orders will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div id="settings" class="section">
+                    <h2 class="mb-4">Settings</h2>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    Change Credentials
+                                </div>
+                                <div class="card-body">
+                                    <form onsubmit="updateCredentials(event)">
+                                        <div class="mb-3">
+                                            <label class="form-label">New Username</label>
+                                            <input type="text" class="form-control" id="newUsername" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">New Password</label>
+                                            <input type="password" class="form-control" id="newPassword" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Confirm Password</label>
+                                            <input type="password" class="form-control" id="confirmPassword" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-check-circle"></i> Update Credentials
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addProductModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addProductForm" onsubmit="addProduct(event)">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Product Name *</label>
+                                <input type="text" class="form-control" id="productName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Team Name *</label>
+                                <input type="text" class="form-control" id="productTeam" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Category *</label>
+                                <select class="form-select" id="productCategory" required>
+                                    <option value="">Select Category</option>
+                                    <option value="JERSEY">JERSEY</option>
+                                    <option value="TROUSER">TROUSER</option>
+                                    <option value="T-Sh">T-Sh</option>
+                                    <option value="TURF & BOOT">TURF & BOOT</option>
+                                    <option value="World Cup">World Cup</option>
+                                    <option value="Accessories">Accessories</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Price *</label>
+                                <input type="number" class="form-control" id="productPrice" step="0.01" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Old Price</label>
+                                <input type="number" class="form-control" id="productOldPrice" step="0.01">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Stock Quantity *</label>
+                                <input type="number" class="form-control" id="productStock" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Rating</label>
+                                <select class="form-select" id="productRating">
+                                    <option value="5">5 Stars</option>
+                                    <option value="4">4 Stars</option>
+                                    <option value="3">3 Stars</option>
+                                    <option value="2">2 Stars</option>
+                                    <option value="1">1 Star</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Material</label>
+                                <input type="text" class="form-control" id="productMaterial">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" id="productDescription"></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Product Images (Upload 1-4 images) *</label>
+                                <p class="text-secondary" style="font-size: 0.85rem; margin-bottom: 1rem;">Upload multiple images for better product showcase</p>
+                                
+                                <!-- Image 1 (Main Image) -->
+                                <div class="mb-3">
+                                    <label class="form-label" style="font-size: 0.9rem; color: var(--primary-color);">Image 1 (Main) *</label>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <input type="url" class="form-control" id="productImage1" placeholder="Or paste image URL">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <div class="image-upload-container" onclick="document.getElementById('productImageFile1').click()">
+                                                <i class="bi bi-cloud-upload upload-icon" style="font-size: 2rem;"></i>
+                                                <div class="upload-text" style="font-size: 0.85rem;">Upload Image 1</div>
+                                                <input type="file" id="productImageFile1" accept="image/*" style="display: none;" onchange="handleMultiImageUpload(event, 'productImagePreview1', 'productImage1', 1)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="image-preview-container" id="productImagePreview1">
+                                        <button type="button" class="remove-image-btn" onclick="removeImage('productImagePreview1', 'productImage1', 'productImageFile1')">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                        <img class="image-preview" id="productImagePreview1Img" src="" alt="Preview 1">
+                                    </div>
+                                </div>
+
+                                <!-- Image 2 -->
+                                <div class="mb-3">
+                                    <label class="form-label" style="font-size: 0.9rem;">Image 2 (Optional)</label>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <input type="url" class="form-control" id="productImage2" placeholder="Or paste image URL">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <div class="image-upload-container" onclick="document.getElementById('productImageFile2').click()">
+                                                <i class="bi bi-cloud-upload upload-icon" style="font-size: 2rem;"></i>
+                                                <div class="upload-text" style="font-size: 0.85rem;">Upload Image 2</div>
+                                                <input type="file" id="productImageFile2" accept="image/*" style="display: none;" onchange="handleMultiImageUpload(event, 'productImagePreview2', 'productImage2', 2)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="image-preview-container" id="productImagePreview2">
+                                        <button type="button" class="remove-image-btn" onclick="removeImage('productImagePreview2', 'productImage2', 'productImageFile2')">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                        <img class="image-preview" id="productImagePreview2Img" src="" alt="Preview 2">
+                                    </div>
+                                </div>
+
+                                <!-- Image 3 -->
+                                <div class="mb-3">
+                                    <label class="form-label" style="font-size: 0.9rem;">Image 3 (Optional)</label>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <input type="url" class="form-control" id="productImage3" placeholder="Or paste image URL">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <div class="image-upload-container" onclick="document.getElementById('productImageFile3').click()">
+                                                <i class="bi bi-cloud-upload upload-icon" style="font-size: 2rem;"></i>
+                                                <div class="upload-text" style="font-size: 0.85rem;">Upload Image 3</div>
+                                                <input type="file" id="productImageFile3" accept="image/*" style="display: none;" onchange="handleMultiImageUpload(event, 'productImagePreview3', 'productImage3', 3)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="image-preview-container" id="productImagePreview3">
+                                        <button type="button" class="remove-image-btn" onclick="removeImage('productImagePreview3', 'productImage3', 'productImageFile3')">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                        <img class="image-preview" id="productImagePreview3Img" src="" alt="Preview 3">
+                                    </div>
+                                </div>
+
+                                <!-- Image 4 -->
+                                <div class="mb-3">
+                                    <label class="form-label" style="font-size: 0.9rem;">Image 4 (Optional)</label>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <input type="url" class="form-control" id="productImage4" placeholder="Or paste image URL">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <div class="image-upload-container" onclick="document.getElementById('productImageFile4').click()">
+                                                <i class="bi bi-cloud-upload upload-icon" style="font-size: 2rem;"></i>
+                                                <div class="upload-text" style="font-size: 0.85rem;">Upload Image 4</div>
+                                                <input type="file" id="productImageFile4" accept="image/*" style="display: none;" onchange="handleMultiImageUpload(event, 'productImagePreview4', 'productImage4', 4)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="image-preview-container" id="productImagePreview4">
+                                        <button type="button" class="remove-image-btn" onclick="removeImage('productImagePreview4', 'productImage4', 'productImageFile4')">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                        <img class="image-preview" id="productImagePreview4Img" src="" alt="Preview 4">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Available Sizes (comma separated)</label>
+                                <input type="text" class="form-control" id="productSizes" placeholder="S,M,L,XL,XXL">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="productFlashSale">
+                                    <label class="form-check-label" for="productFlashSale">
+                                        Flash Sale
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="productBestSeller">
+                                    <label class="form-check-label" for="productBestSeller">
+                                        Best Seller
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="productNewArrival">
+                                    <label class="form-check-label" for="productNewArrival">
+                                        New Arrival
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Add Product
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal fade" id="editProductModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProductForm" onsubmit="updateProduct(event)">
+                        <input type="hidden" id="editProductId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Product Name *</label>
+                                <input type="text" class="form-control" id="editProductName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Team Name *</label>
+                                <input type="text" class="form-control" id="editProductTeam" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Category *</label>
+                                <select class="form-select" id="editProductCategory" required>
+                                    <option value="JERSEY">JERSEY</option>
+                                    <option value="TROUSER">TROUSER</option>
+                                    <option value="T-Shirt">T-Shirt</option>
+                                    <option value="TURF & BOOT">TURF & BOOT</option>
+                                    <option value="World Cup">World Cup</option>
+                                    <option value="Accessories">Accessories</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Price *</label>
+                                <input type="number" class="form-control" id="editProductPrice" step="0.01" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Old Price</label>
+                                <input type="number" class="form-control" id="editProductOldPrice" step="0.01">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Stock Quantity *</label>
+                                <input type="number" class="form-control" id="editProductStock" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Rating</label>
+                                <select class="form-select" id="editProductRating">
+                                    <option value="5">5 Stars</option>
+                                    <option value="4">4 Stars</option>
+                                    <option value="3">3 Stars</option>
+                                    <option value="2">2 Stars</option>
+                                    <option value="1">1 Star</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Material</label>
+                                <input type="text" class="form-control" id="editProductMaterial">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" id="editProductDescription"></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Product Images (Upload 1-4 images) *</label>
+                                <p class="text-secondary" style="font-size: 0.85rem; margin-bottom: 1rem;">Upload multiple images for better product showcase</p>
+                                
+                                <!-- Image 1 (Main Image) -->
+                                <div class="mb-3">
+                                    <label class="form-label" style="font-size: 0.9rem; color: var(--primary-color);">Image 1 (Main) *</label>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <input type="url" class="form-control" id="editProductImage1" placeholder="Or paste image URL">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <div class="image-upload-container" onclick="document.getElementById('editProductImageFile1').click()">
+                                                <i class="bi bi-cloud-upload upload-icon" style="font-size: 2rem;"></i>
+                                                <div class="upload-text" style="font-size: 0.85rem;">Upload Image 1</div>
+                                                <input type="file" id="editProductImageFile1" accept="image/*" style="display: none;" onchange="handleMultiImageUpload(event, 'editProductImagePreview1', 'editProductImage1', 1)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="image-preview-container" id="editProductImagePreview1">
+                                        <button type="button" class="remove-image-btn" onclick="removeImage('editProductImagePreview1', 'editProductImage1', 'editProductImageFile1')">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                        <img class="image-preview" id="editProductImagePreview1Img" src="" alt="Preview 1">
+                                    </div>
+                                </div>
+
+                                <!-- Image 2 -->
+                                <div class="mb-3">
+                                    <label class="form-label" style="font-size: 0.9rem;">Image 2 (Optional)</label>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <input type="url" class="form-control" id="editProductImage2" placeholder="Or paste image URL">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <div class="image-upload-container" onclick="document.getElementById('editProductImageFile2').click()">
+                                                <i class="bi bi-cloud-upload upload-icon" style="font-size: 2rem;"></i>
+                                                <div class="upload-text" style="font-size: 0.85rem;">Upload Image 2</div>
+                                                <input type="file" id="editProductImageFile2" accept="image/*" style="display: none;" onchange="handleMultiImageUpload(event, 'editProductImagePreview2', 'editProductImage2', 2)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="image-preview-container" id="editProductImagePreview2">
+                                        <button type="button" class="remove-image-btn" onclick="removeImage('editProductImagePreview2', 'editProductImage2', 'editProductImageFile2')">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                        <img class="image-preview" id="editProductImagePreview2Img" src="" alt="Preview 2">
+                                    </div>
+                                </div>
+
+                                <!-- Image 3 -->
+                                <div class="mb-3">
+                                    <label class="form-label" style="font-size: 0.9rem;">Image 3 (Optional)</label>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <input type="url" class="form-control" id="editProductImage3" placeholder="Or paste image URL">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <div class="image-upload-container" onclick="document.getElementById('editProductImageFile3').click()">
+                                                <i class="bi bi-cloud-upload upload-icon" style="font-size: 2rem;"></i>
+                                                <div class="upload-text" style="font-size: 0.85rem;">Upload Image 3</div>
+                                                <input type="file" id="editProductImageFile3" accept="image/*" style="display: none;" onchange="handleMultiImageUpload(event, 'editProductImagePreview3', 'editProductImage3', 3)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="image-preview-container" id="editProductImagePreview3">
+                                        <button type="button" class="remove-image-btn" onclick="removeImage('editProductImagePreview3', 'editProductImage3', 'editProductImageFile3')">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                        <img class="image-preview" id="editProductImagePreview3Img" src="" alt="Preview 3">
+                                    </div>
+                                </div>
+
+                                <!-- Image 4 -->
+                                <div class="mb-3">
+                                    <label class="form-label" style="font-size: 0.9rem;">Image 4 (Optional)</label>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <input type="url" class="form-control" id="editProductImage4" placeholder="Or paste image URL">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <div class="image-upload-container" onclick="document.getElementById('editProductImageFile4').click()">
+                                                <i class="bi bi-cloud-upload upload-icon" style="font-size: 2rem;"></i>
+                                                <div class="upload-text" style="font-size: 0.85rem;">Upload Image 4</div>
+                                                <input type="file" id="editProductImageFile4" accept="image/*" style="display: none;" onchange="handleMultiImageUpload(event, 'editProductImagePreview4', 'editProductImage4', 4)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="image-preview-container" id="editProductImagePreview4">
+                                        <button type="button" class="remove-image-btn" onclick="removeImage('editProductImagePreview4', 'editProductImage4', 'editProductImageFile4')">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                        <img class="image-preview" id="editProductImagePreview4Img" src="" alt="Preview 4">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Available Sizes (comma separated)</label>
+                                <input type="text" class="form-control" id="editProductSizes">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="editProductFlashSale">
+                                    <label class="form-check-label" for="editProductFlashSale">
+                                        Flash Sale
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="editProductBestSeller">
+                                    <label class="form-check-label" for="editProductBestSeller">
+                                        Best Seller
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="editProductNewArrival">
+                                    <label class="form-check-label" for="editProductNewArrival">
+                                        New Arrival
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Update Product
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Order Modal -->
+    <div class="modal fade" id="viewOrderModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Order Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="orderDetails">
+                        <!-- Order details will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Initialize Admin Credentials
+        if (!localStorage.getItem('adminCredentials')) {
+            localStorage.setItem('adminCredentials', JSON.stringify({
+                username: 'admin',
+                password: 'admin123'
+            }));
+        }
+
+        // Check Session
+        function checkSession() {
+            const isLoggedIn = localStorage.getItem('adminSession');
+            if (isLoggedIn) {
+                showDashboard();
+            } else {
+                showLogin();
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('dashboardPage').style.display = 'none';
+        }
+
+        function showDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboardPage').style.display = 'flex';
+            loadDashboardData();
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('loginPassword');
+            const passwordToggle = document.getElementById('passwordToggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggle.classList.remove('bi-eye');
+                passwordToggle.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordToggle.classList.remove('bi-eye-slash');
+                passwordToggle.classList.add('bi-eye');
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const credentials = JSON.parse(localStorage.getItem('adminCredentials'));
+            
+            if (username === credentials.username && password === credentials.password) {
+                localStorage.setItem('adminSession', 'true');
+                localStorage.setItem('currentUser', username);
+                showDashboard();
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('errorMessage').style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('adminSession');
+                // Clear form fields
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
+                showLogin();
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active from all menu items
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName).classList.add('active');
+            
+            // Highlight active menu item
+            event.target.classList.add('active');
+            
+            // Update navbar title
+            document.querySelector('.navbar-title').textContent = sectionName.charAt(0).toUpperCase() + sectionName.slice(1);
+            
+            // Load section data
+            if (sectionName === 'products') {
+                loadProducts();
+            } else if (sectionName === 'orders') {
+                loadOrders();
+            } else if (sectionName === 'dashboard') {
+                loadDashboardData();
+            } else if (sectionName === 'settings') {
+                loadSettings();
+            }
+        }
+
+        function loadDashboardData() {
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const currentUser = localStorage.getItem('currentUser') || 'Admin';
+            
+            // Update user info
+            document.getElementById('userName').textContent = currentUser;
+            document.getElementById('userAvatar').textContent = currentUser.charAt(0).toUpperCase();
+            
+            // Update stats
+            document.getElementById('totalProducts').textContent = products.length;
+            document.getElementById('totalOrders').textContent = orders.length;
+            document.getElementById('pendingOrders').textContent = orders.filter(o => o.status === 'Pending').length;
+            
+            const revenue = orders.reduce((sum, order) => sum + order.subtotal, 0);
+            document.getElementById('totalRevenue').textContent = `৳${revenue.toFixed(2)}`;
+            
+            // Load recent orders
+            const recentOrders = orders.slice(-5).reverse();
+            const tableHtml = recentOrders.length > 0 ? recentOrders.map(order => `
+                <tr>
+                    <td>#${order.id}</td>
+                    <td>${order.customer.name}</td>
+                    <td>${order.items.length}</td>
+                    <td>৳${order.subtotal.toFixed(2)}</td>
+                    <td><span class="badge badge-${order.status.toLowerCase()}">${order.status}</span></td>
+                    <td>${new Date(order.date).toLocaleDateString()}</td>
+                </tr>
+            `).join('') : '<tr><td colspan="6" class="text-center text-secondary">No orders yet</td></tr>';
+            
+            document.getElementById('recentOrdersTable').innerHTML = tableHtml;
+        }
+
+        function loadProducts() {
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            
+            const tableHtml = products.map(product => `
+                <tr>
+                    <td><img src="${product.image}" class="product-img" alt="${product.name}"></td>
+                    <td>${product.name}</td>
+                    <td>${product.category}</td>
+                    <td>${product.team}</td>
+                    <td>৳${product.price}</td>
+                    <td>${product.stock}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editProduct(${product.id})">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            document.getElementById('productsTable').innerHTML = tableHtml || '<tr><td colspan="7" class="text-center text-secondary">No products yet</td></tr>';
+        }
+
+        function handleImageUpload(event, previewContainerId, urlInputId) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Check file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('File size must be less than 2MB');
+                event.target.value = '';
+                return;
+            }
+            
+            // Check file type
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file');
+                event.target.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                
+                // Update preview
+                const previewContainer = document.getElementById(previewContainerId);
+                const previewImg = document.getElementById(previewContainerId + 'Img');
+                previewImg.src = imageData;
+                previewContainer.classList.add('show');
+                
+                // Update URL input with base64 data
+                document.getElementById(urlInputId).value = imageData;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleMultiImageUpload(event, previewContainerId, urlInputId, imageNumber) {
+            handleImageUpload(event, previewContainerId, urlInputId);
+        }
+        
+        function removeImage(previewContainerId, urlInputId, fileInputId) {
+            const previewContainer = document.getElementById(previewContainerId);
+            const previewImg = document.getElementById(previewContainerId + 'Img');
+            previewImg.src = '';
+            previewContainer.classList.remove('show');
+            
+            document.getElementById(urlInputId).value = '';
+            document.getElementById(fileInputId).value = '';
+        }
+
+        function addProduct(event) {
+            event.preventDefault();
+            
+            const image1 = document.getElementById('productImage1').value;
+            if (!image1) {
+                alert('Please provide at least the main product image (Image 1)');
+                return;
+            }
+            
+            // Collect all images
+            const productImages = [];
+            for (let i = 1; i <= 4; i++) {
+                const imgValue = document.getElementById(`productImage${i}`).value;
+                if (imgValue) {
+                    productImages.push(imgValue);
+                }
+            }
+            
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+            
+            const sizesInput = document.getElementById('productSizes').value;
+            const sizes = sizesInput ? sizesInput.split(',').map(s => s.trim()) : ['S', 'M', 'L', 'XL', 'XXL'];
+            
+            const oldPrice = parseFloat(document.getElementById('productOldPrice').value) || 0;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const discount = oldPrice > 0 ? Math.round(((oldPrice - price) / oldPrice) * 100) : 0;
+            
+            const newProduct = {
+                id: newId,
+                name: document.getElementById('productName').value,
+                team: document.getElementById('productTeam').value,
+                category: document.getElementById('productCategory').value,
+                price: price,
+                oldPrice: oldPrice || price * 1.3,
+                discount: discount || 30,
+                rating: parseInt(document.getElementById('productRating').value),
+                image: productImages[0],
+                images: productImages,
+                description: document.getElementById('productDescription').value || 'Premium quality product',
+                material: document.getElementById('productMaterial').value || '100% Polyester',
+                sizes: sizes,
+                stock: parseInt(document.getElementById('productStock').value),
+                isFlashSale: document.getElementById('productFlashSale').checked,
+                isBestSeller: document.getElementById('productBestSeller').checked,
+                isNewArrival: document.getElementById('productNewArrival').checked
+            };
+            
+            products.push(newProduct);
+            localStorage.setItem('products', JSON.stringify(products));
+            
+            bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
+            document.getElementById('addProductForm').reset();
+            
+            // Clear all image previews
+            for (let i = 1; i <= 4; i++) {
+                removeImage(`productImagePreview${i}`, `productImage${i}`, `productImageFile${i}`);
+            }
+            
+            loadProducts();
+            alert('Product added successfully!');
+        }
+
+        function editProduct(productId) {
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const product = products.find(p => p.id === productId);
+            
+            if (!product) return;
+            
+            document.getElementById('editProductId').value = product.id;
+            document.getElementById('editProductName').value = product.name;
+            document.getElementById('editProductTeam').value = product.team;
+            document.getElementById('editProductCategory').value = product.category;
+            document.getElementById('editProductPrice').value = product.price;
+            document.getElementById('editProductOldPrice').value = product.oldPrice;
+            document.getElementById('editProductStock').value = product.stock;
+            document.getElementById('editProductRating').value = product.rating;
+            document.getElementById('editProductMaterial').value = product.material;
+            document.getElementById('editProductDescription').value = product.description;
+            document.getElementById('editProductSizes').value = product.sizes.join(',');
+            document.getElementById('editProductFlashSale').checked = product.isFlashSale;
+            document.getElementById('editProductBestSeller').checked = product.isBestSeller;
+            document.getElementById('editProductNewArrival').checked = product.isNewArrival;
+            
+            // Load all images
+            const productImages = product.images || [product.image];
+            for (let i = 1; i <= 4; i++) {
+                const imageUrl = productImages[i - 1] || '';
+                document.getElementById(`editProductImage${i}`).value = imageUrl;
+                
+                if (imageUrl) {
+                    const previewContainer = document.getElementById(`editProductImagePreview${i}`);
+                    const previewImg = document.getElementById(`editProductImagePreview${i}Img`);
+                    previewImg.src = imageUrl;
+                    previewContainer.classList.add('show');
+                }
+            }
+            
+            const modal = new bootstrap.Modal(document.getElementById('editProductModal'));
+            modal.show();
+        }
+
+        function updateProduct(event) {
+            event.preventDefault();
+            
+            const image1 = document.getElementById('editProductImage1').value;
+            if (!image1) {
+                alert('Please provide at least the main product image (Image 1)');
+                return;
+            }
+            
+            // Collect all images
+            const productImages = [];
+            for (let i = 1; i <= 4; i++) {
+                const imgValue = document.getElementById(`editProductImage${i}`).value;
+                if (imgValue) {
+                    productImages.push(imgValue);
+                }
+            }
+            
+            const productId = parseInt(document.getElementById('editProductId').value);
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const index = products.findIndex(p => p.id === productId);
+            
+            if (index === -1) return;
+            
+            const sizesInput = document.getElementById('editProductSizes').value;
+            const sizes = sizesInput ? sizesInput.split(',').map(s => s.trim()) : ['S', 'M', 'L', 'XL', 'XXL'];
+            
+            const oldPrice = parseFloat(document.getElementById('editProductOldPrice').value);
+            const price = parseFloat(document.getElementById('editProductPrice').value);
+            const discount = Math.round(((oldPrice - price) / oldPrice) * 100);
+            
+            products[index] = {
+                ...products[index],
+                name: document.getElementById('editProductName').value,
+                team: document.getElementById('editProductTeam').value,
+                category: document.getElementById('editProductCategory').value,
+                price: price,
+                oldPrice: oldPrice,
+                discount: discount,
+                rating: parseInt(document.getElementById('editProductRating').value),
+                image: productImages[0],
+                images: productImages,
+                description: document.getElementById('editProductDescription').value,
+                material: document.getElementById('editProductMaterial').value,
+                sizes: sizes,
+                stock: parseInt(document.getElementById('editProductStock').value),
+                isFlashSale: document.getElementById('editProductFlashSale').checked,
+                isBestSeller: document.getElementById('editProductBestSeller').checked,
+                isNewArrival: document.getElementById('editProductNewArrival').checked
+            };
+            
+            localStorage.setItem('products', JSON.stringify(products));
+            
+            bootstrap.Modal.getInstance(document.getElementById('editProductModal')).hide();
+            
+            // Clear all image previews
+            for (let i = 1; i <= 4; i++) {
+                removeImage(`editProductImagePreview${i}`, `editProductImage${i}`, `editProductImageFile${i}`);
+            }
+            
+            loadProducts();
+            alert('Product updated successfully!');
+        }
+
+        function deleteProduct(productId) {
+            if (!confirm('Are you sure you want to delete this product?')) return;
+            
+            let products = JSON.parse(localStorage.getItem('products')) || [];
+            products = products.filter(p => p.id !== productId);
+            localStorage.setItem('products', JSON.stringify(products));
+            
+            loadProducts();
+            loadDashboardData();
+            alert('Product deleted successfully!');
+        }
+
+        function loadOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            
+            const tableHtml = orders.map(order => `
+                <tr>
+                    <td>#${order.id}</td>
+                    <td>${order.customer.name}</td>
+                    <td>${order.customer.phone}</td>
+                    <td>${order.customer.whatsapp || 'N/A'}</td>
+                    <td>${order.customer.address}, ${order.customer.city}</td>
+                    <td>৳${order.subtotal.toFixed(2)}</td>
+                    <td>
+                        <select class="form-select form-select-sm" onchange="updateOrderStatus(${order.id}, this.value)" style="width: 150px;">
+                            <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Processing" ${order.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                            <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                            <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-success btn-sm" onclick="viewOrder(${order.id})">
+                            <i class="bi bi-eye"></i> View
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            document.getElementById('ordersTable').innerHTML = tableHtml || '<tr><td colspan="8" class="text-center text-secondary">No orders yet</td></tr>';
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const index = orders.findIndex(o => o.id === orderId);
+            
+            if (index !== -1) {
+                orders[index].status = newStatus;
+                localStorage.setItem('orders', JSON.stringify(orders));
+                loadDashboardData();
+                alert('Order status updated successfully!');
+            }
+        }
+
+        function viewOrder(orderId) {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const order = orders.find(o => o.id === orderId);
+            
+            if (!order) return;
+            
+            const itemsHtml = order.items.map(item => `
+                <tr>
+                    <td><img src="${item.image}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;"></td>
+                    <td>${item.name}</td>
+                    <td>${item.size}</td>
+                    <td>${item.quantity}</td>
+                    <td>৳${item.price}</td>
+                    <td>৳${(item.price * item.quantity).toFixed(2)}</td>
+                </tr>
+            `).join('');
+            
+            const detailsHtml = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Customer Information</h6>
+                        <p><strong>Name:</strong> ${order.customer.name}</p>
+                        <p><strong>Phone:</strong> ${order.customer.phone}</p>
+                        <p><strong>WhatsApp:</strong> ${order.customer.whatsapp || 'N/A'}</p>
+                        <p><strong>City:</strong> ${order.customer.city}</p>
+                        <p><strong>Address:</strong> ${order.customer.address}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Order Information</h6>
+                        <p><strong>Order ID:</strong> #${order.id}</p>
+                        <p><strong>Date:</strong> ${new Date(order.date).toLocaleString()}</p>
+                        <p><strong>Status:</strong> <span class="badge badge-${order.status.toLowerCase()}">${order.status}</span></p>
+                        <p><strong>Notes:</strong> ${order.notes || 'N/A'}</p>
+                    </div>
+                </div>
+                <hr>
+                <h6>Order Items</h6>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product</th>
+                            <th>Size</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsHtml}
+                    </tbody>
+                </table>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6 ms-auto">
+                        <table class="table">
+                            <tr>
+                                <td><strong>Subtotal:</strong></td>
+                                <td class="text-end">${order.subtotal.toFixed(2)}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Delivery:</strong></td>
+                                <td class="text-end">${order.delivery} Tk</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total:</strong></td>
+                                <td class="text-end"><strong>${order.subtotal.toFixed(2)} + ${order.delivery} </strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('orderDetails').innerHTML = detailsHtml;
+            
+            const modal = new bootstrap.Modal(document.getElementById('viewOrderModal'));
+            modal.show();
+        }
+
+        function loadSettings() {
+            const credentials = JSON.parse(localStorage.getItem('adminCredentials'));
+            document.getElementById('newUsername').value = credentials.username;
+        }
+
+        function updateCredentials(event) {
+            event.preventDefault();
+            
+            const newUsername = document.getElementById('newUsername').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            const newCredentials = {
+                username: newUsername,
+                password: newPassword
+            };
+            
+            localStorage.setItem('adminCredentials', JSON.stringify(newCredentials));
+            localStorage.setItem('currentUser', newUsername);
+            
+            alert('Credentials updated successfully! Please login again.');
+            handleLogout();
+        }
+
+        // Initialize on page load
+        checkSession();
+    </script>
+</body>
+</html>

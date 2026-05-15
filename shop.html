@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - ProSport | Premium Sports Jerseys</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+  <link rel="stylesheet" href="styles.css">
+        
+</head>
+<body>
+
+     <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#home">
+
+    <img src="images/logo.jpeg" 
+         alt="JerseyTown Logo"
+         style="
+            width:45px;
+            height:45px;
+            object-fit:cover;
+            border-radius:50%;
+            border:2px solid #00ff88;
+            padding:2px;
+         ">
+
+    <span>JerseyTown</span>
+
+</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="shop.html">Shop</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#categories">Categories</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="#" data-bs-toggle="offcanvas" data-bs-target="#wishlistOffcanvas">
+                            <i class="bi bi-heart"></i>
+                            <span class="cart-badge" id="wishlistCount">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="#" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+                            <i class="bi bi-cart3"></i>
+                            <span class="cart-badge" id="cartCount">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Shop All Products</h1>
+            <p class="text-secondary">Discover our complete collection of premium sports jerseys and athletic wear</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-5">
+        <div class="container">
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="row g-3 align-items-center">
+                    <div class="col-lg-4 col-md-6">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search products...">
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <select id="categoryFilter" class="form-select">
+                            <option value="">All Categories</option>
+                            <option value="JERSEY">JERSEY</option>
+                            <option value="TROUSER">TROUSER</option>
+                            <option value="T-Shirt">T-Shirt</option>
+                            <option value="TURF & BOOT">TURF & BOOT</option>
+                            <option value="World Cup">World Cup</option>
+                            <option value="Accessories">Accessories</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <select id="sortFilter" class="form-select">
+                            <option value="latest">Latest</option>
+                            <option value="popular">Popular</option>
+                            <option value="priceLow">Price: Low to High</option>
+                            <option value="priceHigh">Price: High to Low</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-gradient flex-grow-1" onclick="applyFilters()">
+                                <i class="bi bi-funnel"></i> Apply
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetFilters()" style="background: var(--hover-bg); border-color: var(--border-color); color: var(--text-primary);">
+                                <i class="bi bi-arrow-clockwise"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Info -->
+            <div class="results-info">
+                Showing <span class="results-count" id="resultsCount">0</span> products
+            </div>
+
+            <!-- Products Grid -->
+            <div class="row g-4" id="productsGrid">
+                <!-- Products will be loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state d-none" id="emptyState">
+                <i class="bi bi-inbox"></i>
+                <h3>No products found</h3>
+                <p>Try adjusting your search or filters</p>
+                <button class="btn btn-gradient mt-3" onclick="resetFilters()">Clear Filters</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wishlist Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="wishlistOffcanvas">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">My Wishlist</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="wishlistItems">
+                <!-- Wishlist items will be loaded here -->
+            </div>
+            <div class="empty-state" id="emptyWishlist">
+                <i class="bi bi-heart"></i>
+                <h5>Your wishlist is empty</h5>
+                <p>Add products you love!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Shopping Cart</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="cartItems">
+                <!-- Cart items will be loaded here -->
+            </div>
+            <div class="cart-summary" id="cartSummary" style="display: none;">
+                <div class="cart-summary-row">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">৳0</span>
+                </div>
+                <div class="cart-summary-row">
+                    <span>Delivery:</span>
+                    <span id="deliveryCharge">0</span>
+                </div>
+                <div class="cart-summary-row">
+                    <span class="cart-total">Total:</span>
+                    <span class="cart-total" id="totalPrice">0</span>
+                </div>
+                <a href="index.html#checkout" class="btn btn-gradient w-100 mt-3">Proceed to Checkout</a>
+            </div>
+            <div class="empty-state" id="emptyCart" style="display: none;">
+                <i class="bi bi-cart-x"></i>
+                <h5>Your cart is empty</h5>
+                <p>Add some products to get started!</p>
+            </div>
+        </div>
+    </div>
+
+   <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                     <a class="navbar-brand d-flex align-items-center gap-2" href="#home">
+
+    <img src="images/logo.jpeg" 
+         alt="JerseyTown Logo"
+         style="
+            width:45px;
+            height:45px;
+            object-fit:cover;
+            border-radius:50%;
+            border:2px solid #00ff88;
+            padding:2px;
+         ">
+
+    <span>JerseyTown</span>
+
+</a>
+                    <p class="text-secondary">Your ultimate destination for premium sports jerseys and athletic wear. Authentic quality, competitive prices.</p>
+                    <div class="footer-social mt-3">
+                        <a href="https://www.facebook.com/jerseytown07/"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="mb-3">Quick Links</h5>
+                    <div class="footer-links">
+                        <a href="#home">Home</a>
+                        <a href="#shop">Shop</a>
+                        <a href="#categories">Categories</a>
+                       
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="mb-3">Categories</h5>
+                    <div class="footer-links">
+                        <a href="#" onclick="filterByCategory('JERSEY')">JERSEY</a>
+                        <a href="#" onclick="filterByCategory('TROUSER')">TROUSER</a>
+                        <a href="#" onclick="filterByCategory('T-Shirt')">T-Shirt</a>
+                        <a href="#" onclick="filterByCategory('World Cup')">World Cup</a>
+                    </div>
+                </div>
+               
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="mb-3">Account</h5>
+                    <div class="footer-links">
+                        <a href="#">My Account</a>
+                        <a href="#">Order History</a>
+                        <a href="#">Wishlist</a>
+                        <a href="admin.html" >✦</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4 pt-4" style="border-top: 1px solid var(--border-color);">
+                <div class="col-12 text-center text-secondary">
+                    <p>
+        &copy; 2024 ProSport. All rights reserved. 
+        Design, Develop & Maintain by 
+        <a href="https://www.facebook.com/share/1G8bZ32kQh/" target="_blank"
+           style="color:#00ff88; text-decoration:none; font-weight:600;">
+           Sass Tech BD
+        </a>
+    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Load data from localStorage
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+        let allProducts = [...products];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartUI();
+            updateWishlistUI();
+            
+            // Check if category filter was set from home page
+            const selectedCategory = localStorage.getItem('selectedCategory');
+            if (selectedCategory) {
+                document.getElementById('categoryFilter').value = selectedCategory;
+                localStorage.removeItem('selectedCategory');
+            }
+            
+            applyFilters();
+            
+            // Setup event listeners
+            document.getElementById('searchInput').addEventListener('input', applyFilters);
+            document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+            document.getElementById('sortFilter').addEventListener('change', applyFilters);
+        });
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const sort = document.getElementById('sortFilter').value;
+            
+            let filtered = products.filter(product => {
+                const matchesSearch = product.name.toLowerCase().includes(searchTerm) || 
+                                    product.team.toLowerCase().includes(searchTerm) ||
+                                    product.category.toLowerCase().includes(searchTerm);
+                const matchesCategory = !category || product.category === category;
+                
+                return matchesSearch && matchesCategory;
+            });
+            
+            // Apply sorting
+            switch(sort) {
+                case 'popular':
+                    filtered.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'priceLow':
+                    filtered.sort((a, b) => a.price - b.price);
+                    break;
+                case 'priceHigh':
+                    filtered.sort((a, b) => b.price - a.price);
+                    break;
+                default: // latest
+                    filtered.sort((a, b) => b.id - a.id);
+            }
+            
+            renderProducts(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('sortFilter').value = 'latest';
+            applyFilters();
+        }
+
+        function renderProducts(productsToRender) {
+            const grid = document.getElementById('productsGrid');
+            const emptyState = document.getElementById('emptyState');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            resultsCount.textContent = productsToRender.length;
+            
+            if (productsToRender.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('d-none');
+                return;
+            }
+            
+            emptyState.classList.add('d-none');
+            
+            const html = productsToRender.map(product => createProductCard(product)).join('');
+            grid.innerHTML = html;
+        }
+
+        function createProductCard(product) {
+            const stars = '<i class="bi bi-star-fill"></i>'.repeat(product.rating);
+            const isInWishlist = wishlist.some(item => item.id === product.id);
+            const wishlistClass = isInWishlist ? 'active' : '';
+            const wishlistIcon = isInWishlist ? 'bi-heart-fill' : 'bi-heart';
+            
+            return `
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="${product.image}" alt="${product.name}">
+                            <div class="product-badge">${product.discount}% OFF</div>
+                            <div class="product-wishlist ${wishlistClass}" onclick="toggleWishlist(${product.id})">
+                                <i class="bi ${wishlistIcon}"></i>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-category">${product.category}</div>
+                            <h5 class="product-title">${product.name}</h5>
+                            <div class="product-team">${product.team}</div>
+                            <div class="product-rating">${stars}</div>
+                            <div class="product-price">
+                                <span class="price-current">৳${product.price}</span>
+                                <span class="price-old">৳${product.oldPrice}</span>
+                            </div>
+                            <div class="product-actions">
+                                <button class="btn-cart" onclick="addToCart(${product.id})">
+                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                </button>
+                                <button class="btn-view" onclick="viewProduct(${product.id})">
+                                    <i class="bi bi-eye"></i> View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Wishlist Functions
+        function toggleWishlist(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            const existingIndex = wishlist.findIndex(item => item.id === productId);
+            
+            if (existingIndex > -1) {
+                wishlist.splice(existingIndex, 1);
+                showToast('Removed from wishlist!');
+            } else {
+                wishlist.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    category: product.category,
+                    team: product.team
+                });
+                showToast('Added to wishlist!');
+            }
+            
+            saveWishlist();
+            updateWishlistUI();
+            applyFilters();
+        }
+
+        function saveWishlist() {
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        }
+
+        function updateWishlistUI() {
+            const wishlistCount = document.getElementById('wishlistCount');
+            const wishlistItems = document.getElementById('wishlistItems');
+            const emptyWishlist = document.getElementById('emptyWishlist');
+            
+            wishlistCount.textContent = wishlist.length;
+            
+            if (wishlist.length === 0) {
+                wishlistItems.innerHTML = '';
+                emptyWishlist.style.display = 'block';
+                return;
+            }
+            
+            emptyWishlist.style.display = 'none';
+            
+            const wishlistHtml = wishlist.map((item, index) => `
+                <div class="cart-item">
+                    <div class="cart-item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                    </div>
+                    <div class="cart-item-info">
+                        <div class="cart-item-title">${item.name}</div>
+                        <div>${item.team}</div>
+                        <div class="cart-item-price">৳${item.price}</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <button class="btn btn-success btn-sm" onclick="addWishlistToCart(${item.id})" style="background: var(--gradient-1); color: var(--dark-bg); border: none; padding: 0.4rem 0.8rem; border-radius: 8px;">
+                            <i class="bi bi-cart-plus"></i>
+                        </button>
+                        <button class="cart-item-remove" onclick="removeFromWishlist(${index})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            wishlistItems.innerHTML = wishlistHtml;
+        }
+
+        function removeFromWishlist(index) {
+            wishlist.splice(index, 1);
+            saveWishlist();
+            updateWishlistUI();
+            applyFilters();
+        }
+
+        function addWishlistToCart(productId) {
+            addToCart(productId);
+        }
+
+        // Cart Functions
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            const cartItem = {
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image,
+                size: product.sizes[0],
+                quantity: 1
+            };
+            
+            const existingIndex = cart.findIndex(item => item.id === cartItem.id && item.size === cartItem.size);
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity++;
+            } else {
+                cart.push(cartItem);
+            }
+            
+            saveCart();
+            updateCartUI();
+            showToast('Added to cart!');
+        }
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function updateCartUI() {
+            const cartCount = document.getElementById('cartCount');
+            const cartItems = document.getElementById('cartItems');
+            const emptyCart = document.getElementById('emptyCart');
+            const cartSummary = document.getElementById('cartSummary');
+            
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '';
+                emptyCart.style.display = 'block';
+                cartSummary.style.display = 'none';
+                return;
+            }
+            
+            emptyCart.style.display = 'none';
+            cartSummary.style.display = 'block';
+            
+            const cartHtml = cart.map((item, index) => `
+                <div class="cart-item">
+                    <div class="cart-item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                    </div>
+                    <div class="cart-item-info">
+                        <div class="cart-item-title">${item.name}</div>
+                        <div>Size: ${item.size}</div>
+                        <div class="cart-item-price">৳${item.price} x ${item.quantity}</div>
+                    </div>
+                    <button class="cart-item-remove" onclick="removeFromCart(${index})">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+            
+            cartItems.innerHTML = cartHtml;
+            
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('subtotal').textContent = `৳${subtotal.toFixed(2)}`;
+            document.getElementById('deliveryCharge').textContent = '80-120 Tk';
+            document.getElementById('totalPrice').textContent = `৳${subtotal.toFixed(2)} + Delivery`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            saveCart();
+            updateCartUI();
+        }
+
+        function viewProduct(productId) {
+            // Store product ID and redirect to home page with product modal
+            localStorage.setItem('viewProductId', productId);
+            window.location.href = 'index.html#product';
+        }
+
+        function showToast(message) {
+            alert(message);
+        }
+    </script>
+</body>
+</html>
